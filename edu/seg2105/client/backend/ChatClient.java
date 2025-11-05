@@ -148,7 +148,7 @@ public class ChatClient extends AbstractClient
 		  }
 		  
 	  }
-	  /* do not need this anymore bc of the Exercise 3, Cliend Side, Part c), iv)
+	  /* do not need this anymore bc of Exercise 3, Cliend Side, Part c), iv)
       else if (command.equals("#login")) {
     	  //#login causes the client to connect to the server. Only allowed if the client is not already 
     	  //connected; displays an error message otherwise.

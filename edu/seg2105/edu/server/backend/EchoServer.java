@@ -32,7 +32,7 @@ public class EchoServer extends AbstractServer
     * Advantage is that it avoids typo mistakes when reusing the methods getInfo
     * and setInfo from ConnectionToClient. Also, we do not want it to be hard-coded.
 	*/
-  static String loginKey="loginID";
+  static final String loginKey="loginID";
   
   //Constructors ****************************************************
   
@@ -240,12 +240,7 @@ public class EchoServer extends AbstractServer
   synchronized protected void clientDisconnected(ConnectionToClient client) {
 		// Since we don't track which ID belongs to this client directly,
 		// remove by value.
-	  System.out.println("Unknown client disconnected from the server");
-	  /*
-	   * Note: I did not write the line above as "System.out.println(client+"disconnected from the server");"
-	   *      since it would print null as the client is null. Once we will be adding the Id (in exercise 3), 
-	   *      we will have more adapted code. Until then, this is my solution to that problem.
-	   * */
+	  System.out.println("Client with loginID:"+client.getInfo(loginKey)+", disconnected from the server");
 	  super.clientDisconnected(client); //Since we do not have access to the private instance clientConnections
 	}
   
@@ -257,12 +252,7 @@ public class EchoServer extends AbstractServer
    **/
   @Override
   synchronized protected void clientException(ConnectionToClient client, Throwable exception) {
-	  System.out.println("Unknown client disconnected unexpectedly from the server: "+exception.getMessage());
-	  /*
-	   * Note: I did not write the line above as "System.out.println(client+"disconnected unexpectedly from the server");"
-	   *      since it would print null as the client is null. Once we will be adding the Id (in exercise 3), 
-	   *      we will have more adapted code. Until then, this is my solution to that problem.
-	   * */
+	  System.out.println("Client with loginID:"+client.getInfo(loginKey)+", disconnected unexpectedly from the server: "+exception.getMessage());
 	  super.clientDisconnected(client); //Since we do not have access to the private instance clientConnections
   }
 }
