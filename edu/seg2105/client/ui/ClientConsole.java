@@ -60,8 +60,7 @@ public class ClientConsole implements ChatIF
     } 
     catch(IOException exception) 
     {
-      System.out.println("Error: Can't setup connection!"
-                + " Terminating client.");
+      System.out.println("ERROR - Can't setup connection! Terminating client.");
       System.exit(1);
     }
     
