@@ -4,6 +4,8 @@ package edu.seg2105.edu.server.backend;
 // license found at www.lloseng.com 
 
 
+import java.io.IOException;
+
 import edu.seg2105.client.common.ChatIF;
 import ocsf.server.*;
 
@@ -84,8 +86,84 @@ public class EchoServer extends AbstractServer
    * This method helps the handleMessageFromServerUI(...) method            
    * Defines what to do if a certain command has been typed
    */
-  public void handleCommand(String command) {
-	  
+  public void handleCommand(String command) throws Exception, NumberFormatException{
+	  if (command.equals("#quit")) {
+		  //#quit causes the server to quit gracefully
+		  quit(); 
+	  }
+	  else if(command.equals("#stop")) {
+		  //#stop causes the server to stop listening for new clients
+		  stopListening();
+	  }
+	  else if(command.equals("#close")) {
+		  //#close causes the server not only to stop listening for new clients, but also to disconnect 
+		  //all existing clients
+		  stopListening(); //Stops listening to clients
+		  try {
+			  close(); //Disconnects all existing clients //throws IOException
+		  }catch(IOException e) {
+			  serverUI.display("An error occured: could not disconnect all existing clients. Try again.");
+		  }		  
+	  }
+	  else if(command.startsWith("#setport")) {
+		  //#setport <port> calls the setPort method in the server: only allowed if the server is closed
+		  if (!isListening() && getNumberOfClients()==0) {
+			  //If the server is not listening and has no connected clients, meaning that it is closed
+			  String newPort=command.substring(8);
+			  newPort=newPort.trim();
+			  int port;
+			  try {
+				  port=Integer.parseInt(newPort); //throws NumberFormatException
+				  setPort(port);
+				  serverUI.display("You set the new port to be: "+port);
+			  }catch(NumberFormatException ne) {
+				 serverUI.display
+				 (newPort+" is not an integer. To set a new port, please try again."); 
+			  }
+		  }
+		  else {
+			  serverUI.display
+			  ("Server is not closed. To set a new port, use the #close command to close the server.");
+		  }
+	  }
+	  else if(command.equals("#start")) {
+		  //#start causes the server to start listening for new clients: only valid if the server is stopped
+		  if (isListening()) {
+			  serverUI.display("Server is already listening for new clients.");
+			  return;
+		  }
+		  try {
+			  listen();
+		  }catch(IOException e) {
+				  serverUI.display("An error occured while trying to listen for new clients. Please try again.");
+		  }
+	  }
+	  else if(command.equals("#getport")) {
+		  //#getport displays the current port number
+		  serverUI.display("Current port number is: "+getPort());
+	  }
+	  else {
+		  serverUI.display("Not a command.");
+		  serverUI.display(command);
+		  try {
+	    	  sendToAllClients("SERVER MSG> "+command);
+		  }catch(Exception e) {
+			  serverUI.display("Could not send message to connected clients.");
+		  }
+	  }
+  }
+  
+  /**
+   * This method terminates the server.
+   */
+  public void quit()
+  {
+    try
+    {
+      close();
+    }
+    catch(IOException e) {}
+    System.exit(0);
   }
     
   /**
