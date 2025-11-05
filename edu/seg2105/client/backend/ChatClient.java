@@ -28,6 +28,10 @@ public class ChatClient extends AbstractClient
    */
   ChatIF clientUI; 
   
+  /**
+   * To be able to differentiate a user from another.
+   * Known by both the server and the client.
+   */
   String loginID;
 
   
